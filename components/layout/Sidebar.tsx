@@ -93,9 +93,9 @@ export const Sidebar: React.FC<SidebarProps> = ({ role, userName, userEmail }) =
       <div className="lg:hidden h-16 border-b border-cream-dark bg-white/95 backdrop-blur px-6 flex items-center justify-between sticky top-0 z-30">
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 bg-logo-gold rounded-full flex items-center justify-center overflow-hidden">
-            <span className="text-[10px] text-text-dark font-bold font-serif">YL</span>
+            <span className="text-[10px] text-text-dark font-bold font-serif">PS</span>
           </div>
-          <span className="font-serif font-bold text-lg text-deep-teal">Yog Love Portal</span>
+          <span className="font-serif font-bold text-lg text-deep-teal">Pranexa Studio Portal</span>
         </div>
         <button 
           onClick={() => setIsOpen(!isOpen)}
@@ -124,10 +124,10 @@ export const Sidebar: React.FC<SidebarProps> = ({ role, userName, userEmail }) =
           {/* Logo Brand block */}
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 bg-logo-gold rounded-full flex items-center justify-center shadow-inner overflow-hidden">
-              <span className="text-xs text-text-dark font-black font-serif">YL</span>
+              <span className="text-xs text-text-dark font-black font-serif">PS</span>
             </div>
             <div>
-              <h1 className="font-serif font-bold text-lg text-deep-teal leading-none">Yog Love</h1>
+              <h1 className="font-serif font-bold text-lg text-deep-teal leading-none">Pranexa Studio</h1>
               <span className="text-[10px] uppercase font-bold tracking-widest text-terracotta-rose mt-1 block">
                 {role === "ADMIN" ? "Admin Portal" : (role === "TRAINER" ? "Trainer Portal" : "Customer Portal")}
               </span>

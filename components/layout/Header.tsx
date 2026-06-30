@@ -37,13 +37,13 @@ export const Header: React.FC = () => {
           <div className="relative w-12 h-12 bg-logo-gold rounded-full flex items-center justify-center shadow-sm overflow-hidden transition-transform group-hover:scale-105 duration-300">
             <Image 
               src="/images/logo.png" 
-              alt="Yog Love Logo" 
+              alt="Pranexa Studio Logo" 
               fill 
               className="object-cover p-1"
               priority
             />
           </div>
-          <span className="font-serif font-bold text-2xl tracking-wide text-deep-teal">Yog Love</span>
+          <span className="font-serif font-bold text-2xl tracking-wide text-deep-teal">Pranexa Studio</span>
         </Link>
 
         {/* Desktop Nav Links */}

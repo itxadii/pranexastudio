@@ -1,25 +1,23 @@
-import type { NextAuthConfig } from "next-auth";
-
 export const authConfig = {
   pages: {
     signIn: "/login",
   },
   callbacks: {
-    async jwt({ token, user }) {
+    async jwt({ token, user }: any) {
       if (user) {
         token.id = user.id;
         token.role = (user as any).role;
       }
       return token;
     },
-    async session({ session, token }) {
+    async session({ session, token }: any) {
       if (token && session.user) {
         (session.user as any).id = token.id;
         (session.user as any).role = token.role;
       }
       return session;
     },
-    authorized({ auth, request: { nextUrl } }) {
+    authorized({ auth, request: { nextUrl } }: any) {
       const isLoggedIn = !!auth?.user;
       const isOnAdmin = nextUrl.pathname.startsWith("/admin");
       const isOnTrainer = nextUrl.pathname.startsWith("/trainer");
@@ -66,6 +64,6 @@ export const authConfig = {
       return true;
     },
   },
-  providers: [], // Add empty providers array to satisfy type definition
-} satisfies NextAuthConfig;
+  providers: [],
+};
 export default authConfig;

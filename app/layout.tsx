@@ -18,7 +18,7 @@ const outfit = Outfit({
 });
 
 export const metadata: Metadata = {
-  title: "Yog Love - Yoga Academy, Retreats & Studio with Ira Trivedi",
+  title: "Pranexa Studio - Yoga Academy, Retreats & Studio with Ira Trivedi",
   description: "Certified yoga teacher training, retreats in exquisite locations, state-of-the-art Mumbai studio, and pre-recorded classes with Ira Trivedi.",
 };
 

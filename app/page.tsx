@@ -120,7 +120,7 @@ export default function HomePage() {
       a: "Pre-recorded videos cannot see you. In our live classes, you get real-time corrections, posture assessments, and answers to your questions, which prevents injury and ensures a consistent practice."
     },
     {
-      q: "Why choose YogLove over hiring a teacher directly?",
+      q: "Why choose Pranexa Studio over hiring a teacher directly?",
       a: "We pre-screen and verify certified expert instructors, handle scheduling, automate Google Meet/Zoom links, and manage subscription extensions. If your teacher is ever on leave, you can seamlessly book a substitute without interrupting your routine."
     }
   ];
@@ -413,7 +413,7 @@ export default function HomePage() {
               <TableHeader className="bg-warm-cream/20 border-b border-cream-dark/50">
                 <TableRow>
                   <TableHead className="font-bold text-text-dark">Feature</TableHead>
-                  <TableHead className="font-bold text-deep-teal">YogLove Live</TableHead>
+                  <TableHead className="font-bold text-deep-teal">Pranexa Studio</TableHead>
                   <TableHead className="font-bold text-text-muted">Local Yoga Studio</TableHead>
                 </TableRow>
               </TableHeader>
@@ -496,23 +496,38 @@ export default function HomePage() {
       </section>
 
       {/* 9. Final Call to Action */}
-      <section className="py-20 bg-gradient-to-br from-deep-teal via-deep-teal/95 to-warm-cream/10 text-white text-center border-t border-cream-dark/20">
-        <div className="max-w-4xl mx-auto px-6 space-y-8">
-          <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white">
-            Start Your Practice Routine Now
-          </h2>
-          <p className="text-sm sm:text-base text-white/80 max-w-2xl mx-auto leading-relaxed">
-            Join thousands of practitioners who have found strength, calm, and consistency through live yoga practice with certified teachers.
-          </p>
-          <div>
-            <Link 
-              href="/login" 
-              className="inline-block px-10 py-4 bg-logo-gold hover:bg-logo-gold/90 text-text-dark font-black rounded-full shadow-lg transition-transform hover:-translate-y-0.5 text-sm"
-            >
-              Book a Free Live Session
-            </Link>
+      <section className="py-20 bg-gradient-to-br from-deep-teal via-deep-teal/95 to-teal-950 text-white border-t border-cream-dark/20 overflow-hidden relative">
+        <div className="max-w-7xl mx-auto px-6 sm:px-8 grid grid-cols-1 lg:grid-cols-12 gap-12 items-center w-full relative z-10">
+          <div className="lg:col-span-7 space-y-6 text-left">
+            <h2 className="font-serif text-3xl sm:text-4xl lg:text-5xl font-black leading-tight text-white">
+              Start Your Practice Routine Now
+            </h2>
+            <p className="text-sm sm:text-base text-white/80 max-w-2xl leading-relaxed">
+              Join thousands of practitioners who have found strength, calm, and consistency through live yoga practice with certified teachers.
+            </p>
+            <div className="pt-2">
+              <Link 
+                href="/login" 
+                className="inline-block px-10 py-4 bg-logo-gold hover:bg-logo-gold/90 text-text-dark font-black rounded-full shadow-lg transition-transform hover:-translate-y-0.5 text-sm"
+              >
+                Book a Free Live Session
+              </Link>
+            </div>
+            <p className="text-xs text-white/60">No credit card required. Free account creation.</p>
           </div>
-          <p className="text-xs text-white/60">No credit card required. Free account creation.</p>
+
+          <div className="lg:col-span-5 relative w-full flex justify-center">
+            <div className="relative w-full max-w-[400px] aspect-[4/3] rounded-3xl overflow-hidden border border-white/10 shadow-2xl">
+              <Image
+                src="/images/event_yin.png"
+                alt="Online Live Practice Session"
+                fill
+                sizes="400px"
+                className="object-cover"
+              />
+              <div className="absolute inset-0 bg-gradient-to-t from-deep-teal/80 via-transparent to-transparent pointer-events-none" />
+            </div>
+          </div>
         </div>
       </section>
 

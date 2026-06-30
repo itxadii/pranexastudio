@@ -220,7 +220,7 @@ export default function ReportsClient({
     const link = document.createElement("a");
     const monthLabel = monthOptions.find(o => o.value === selectedMonth)?.label.replace(/\s+/g, "_") || "Report";
     link.setAttribute("href", url);
-    link.setAttribute("download", `Yog_Love_Employee_Practice_Report_${monthLabel}.csv`);
+    link.setAttribute("download", `Pranexa_Studio_Trainer_Practice_Report_${monthLabel}.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -245,7 +245,7 @@ export default function ReportsClient({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Yog_Love_Yoga_Sessions_Report.csv`);
+    link.setAttribute("download", `Pranexa_Studio_Sessions_Report.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -271,7 +271,7 @@ export default function ReportsClient({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Yog_Love_Revenue_Report.csv`);
+    link.setAttribute("download", `Pranexa_Studio_Revenue_Report.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
@@ -300,7 +300,7 @@ export default function ReportsClient({
     const url = URL.createObjectURL(blob);
     const link = document.createElement("a");
     link.setAttribute("href", url);
-    link.setAttribute("download", `Yog_Love_Client_Progress_Report.csv`);
+    link.setAttribute("download", `Pranexa_Studio_Client_Progress_Report.csv`);
     link.style.visibility = "hidden";
     document.body.appendChild(link);
     link.click();
