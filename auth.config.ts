@@ -19,6 +19,7 @@ export const authConfig = {
     },
     authorized({ auth, request: { nextUrl } }: any) {
       const isLoggedIn = !!auth?.user;
+      console.log(`DEBUG - Middleware check: ${nextUrl.pathname}. isLoggedIn: ${isLoggedIn}, role: ${(auth?.user as any)?.role}`);
       const isOnAdmin = nextUrl.pathname.startsWith("/admin");
       const isOnTrainer = nextUrl.pathname.startsWith("/trainer");
       const isOnCustomer = nextUrl.pathname.startsWith("/customer");
@@ -28,7 +29,8 @@ export const authConfig = {
           const role = (auth.user as any).role;
           if (role === "ADMIN") return true;
           if (role === "TRAINER") return Response.redirect(new URL("/trainer", nextUrl));
-          return Response.redirect(new URL("/customer", nextUrl));
+          if (role === "CUSTOMER") return Response.redirect(new URL("/customer", nextUrl));
+          return false; // Safely redirect to /login
         }
         return false; // Redirect to login
       } else if (isOnTrainer) {
@@ -36,7 +38,8 @@ export const authConfig = {
           const role = (auth.user as any).role;
           if (role === "TRAINER") return true;
           if (role === "ADMIN") return Response.redirect(new URL("/admin", nextUrl));
-          return Response.redirect(new URL("/customer", nextUrl));
+          if (role === "CUSTOMER") return Response.redirect(new URL("/customer", nextUrl));
+          return false; // Safely redirect to /login
         }
         return false; // Redirect to login
       } else if (isOnCustomer) {
@@ -44,7 +47,8 @@ export const authConfig = {
           const role = (auth.user as any).role;
           if (role === "CUSTOMER") return true;
           if (role === "ADMIN") return Response.redirect(new URL("/admin", nextUrl));
-          return Response.redirect(new URL("/trainer", nextUrl));
+          if (role === "TRAINER") return Response.redirect(new URL("/trainer", nextUrl));
+          return false; // Safely redirect to /login
         }
         return false; // Redirect to login
       }

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useRouter } from "next/navigation";
 import { submitLecture } from "@/actions/lecture";
 import { completeSession, cancelSession, submitProgressLog, requestLeave } from "@/actions/session";
@@ -80,6 +80,11 @@ export default function TrainerDashboardClient({
 }: TrainerDashboardClientProps) {
   const router = useRouter();
   const [activeTab, setActiveTab] = useState<TabType>("classes");
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Legacy self-practice log form states
   const [selfNotes, setSelfNotes] = useState("");
@@ -332,7 +337,9 @@ export default function TrainerDashboardClient({
                   <div key={s.id} className="p-5 border border-cream-dark rounded-xl space-y-4 flex flex-col justify-between hover:border-deep-teal/40 hover:shadow-xs transition-all">
                     <div className="space-y-2">
                       <span className="text-[10px] uppercase font-bold text-terracotta-rose tracking-wider">
-                        {new Date(s.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - {new Date(s.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
+                        {mounted
+                          ? `${new Date(s.start).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })} - ${new Date(s.end).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}`
+                          : "Loading..."}
                       </span>
                       <h4 className="font-bold text-base text-text-dark">{s.title}</h4>
                       <p className="text-xs text-text-muted">Client: {s.customerName}</p>
@@ -490,7 +497,9 @@ export default function TrainerDashboardClient({
                     {leaves.map(l => (
                       <TableRow key={l.id}>
                         <TableCell className="font-semibold text-text-dark text-sm">
-                          {new Date(l.startDate).toLocaleDateString()} - {new Date(l.endDate).toLocaleDateString()}
+                          {mounted 
+                            ? `${new Date(l.startDate).toLocaleDateString()} - ${new Date(l.endDate).toLocaleDateString()}`
+                            : "Loading..."}
                         </TableCell>
                         <TableCell className="text-sm text-text-muted">{l.reason}</TableCell>
                         <TableCell>

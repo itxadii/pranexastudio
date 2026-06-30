@@ -4,8 +4,19 @@ import * as bcrypt from "bcryptjs";
 const prisma = new PrismaClient();
 
 async function main() {
-  // Clear any leftover data safely
   console.log("Seeding data...");
+
+  // 0. Clear tables in reverse dependency order
+  await prisma.attendance.deleteMany({});
+  await prisma.progressLog.deleteMany({});
+  await prisma.session.deleteMany({});
+  await prisma.invoice.deleteMany({});
+  await prisma.customerSubscription.deleteMany({});
+  await prisma.trainerAssignment.deleteMany({});
+  await prisma.trainerLeave.deleteMany({});
+  await prisma.lecture.deleteMany({});
+  await prisma.subscriptionPlan.deleteMany({});
+  await prisma.user.deleteMany({});
 
   // Hashed password for users
   const hashedPassword = await bcrypt.hash("admin123", 10);
@@ -177,6 +188,54 @@ async function main() {
     }
   });
   console.log("Sessions seeded.");
+
+  // 8. Seed Completed Session & Progress Log
+  const pastStartTime = new Date();
+  pastStartTime.setDate(pastStartTime.getDate() - 1); // 1 day ago
+  const pastEndTime = new Date(pastStartTime.getTime() + 60 * 60 * 1000);
+
+  const completedSession = await prisma.session.create({
+    data: {
+      trainerId: trainer.id,
+      customerId: customer1.id,
+      title: "Morning Vinyasa Basics",
+      date: pastStartTime,
+      startTime: pastStartTime,
+      endTime: pastEndTime,
+      duration: 60,
+      meetingProvider: "GoogleMeet",
+      meetingLink: "https://meet.google.com/abc-defg-hij",
+      status: "Completed",
+      notes: "First introductory session."
+    }
+  });
+
+  // Seed Attendance for the completed session
+  await prisma.attendance.create({
+    data: {
+      sessionId: completedSession.id,
+      trainerPresent: true,
+      customerPresent: true,
+      remarks: "Excellent energy and posture dedication."
+    }
+  });
+
+  // Seed Progress Log for the completed session
+  await prisma.progressLog.create({
+    data: {
+      sessionId: completedSession.id,
+      customerId: customer1.id,
+      trainerId: trainer.id,
+      flexibility: 8,
+      balance: 7,
+      breathing: 9,
+      focus: 8,
+      stress: 8,
+      weight: 62.5,
+      remarks: "Great beginner flexibility. Breathing techniques are stable, focus is deep."
+    }
+  });
+  console.log("Completed sessions and progress logs seeded.");
   console.log("Seeding complete successfully!");
 }
 

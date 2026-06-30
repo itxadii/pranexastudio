@@ -7,7 +7,13 @@ export const CookieBanner: React.FC = () => {
   const [showBanner, setShowBanner] = useState(true);
   const pathname = usePathname();
 
-  if (!showBanner || pathname.startsWith("/admin") || pathname.startsWith("/user") || pathname.startsWith("/login")) return null;
+  if (
+    !showBanner || 
+    pathname.startsWith("/admin") || 
+    pathname.startsWith("/trainer") || 
+    pathname.startsWith("/customer") || 
+    pathname.startsWith("/login")
+  ) return null;
 
   return (
     <div className="fixed bottom-0 left-0 right-0 z-50 bg-white border-t border-cream-dark shadow-[0_-4px_20px_rgba(0,0,0,0.05)] p-4 sm:p-5 flex flex-col md:flex-row md:items-center justify-between gap-4 animate-slideUp">

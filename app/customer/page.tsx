@@ -10,12 +10,15 @@ export const revalidate = 0; // Always fetch fresh dashboard metrics
 
 export default async function CustomerDashboardPage() {
   const session = await auth();
+  console.log("DEBUG - Customer page session:", JSON.stringify(session));
 
   if (!session?.user || !(session.user as any).id) {
+    console.log("DEBUG - Redirecting to /login because session or session.user.id is missing");
     redirect("/login");
   }
 
   const userId = (session.user as any).id;
+  console.log("DEBUG - Fetching customer for userId:", userId);
 
   // 1. Fetch user subscription, assignments, and invoices
   const customer = await prisma.user.findUnique({
@@ -38,7 +41,10 @@ export default async function CustomerDashboardPage() {
     }
   });
 
+  console.log("DEBUG - Customer database query result found:", !!customer);
+
   if (!customer) {
+    console.log("DEBUG - Redirecting to /login because customer record was not found in postgres");
     redirect("/login");
   }
 

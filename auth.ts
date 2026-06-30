@@ -78,6 +78,28 @@ export const { handlers, signIn, signOut, auth } = NextAuth({
         token.id = user.id;
         token.role = (user as any).role;
       }
+      
+      if (token.email) {
+        let localUser = await prisma.user.findUnique({
+          where: { email: token.email }
+        });
+        if (!localUser) {
+          // Re-create user record dynamically if missing in the database (e.g. after db resets)
+          localUser = await prisma.user.create({
+            data: {
+              name: token.name || "Google User",
+              email: token.email,
+              password: "",
+              role: "CUSTOMER",
+              status: "ACTIVE",
+              timezone: "UTC",
+              country: "India"
+            }
+          });
+        }
+        token.id = localUser.id;
+        token.role = localUser.role;
+      }
       return token;
     },
     async session({ session, token }) {
