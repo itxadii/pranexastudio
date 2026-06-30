@@ -1,0 +1,247 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+enum Role {
+  ADMIN
+  TRAINER
+  CUSTOMER
+}
+
+enum UserStatus {
+  ACTIVE
+  SUSPENDED
+  EXPIRED
+}
+
+enum LectureStatus {
+  COMPLETED
+  MISSED
+}
+
+enum SubscriptionStatus {
+  ACTIVE
+  EXPIRED
+  CANCELLED
+}
+
+enum SessionStatus {
+  Scheduled
+  Completed
+  Cancelled
+  Missed
+}
+
+enum MeetingProvider {
+  GoogleMeet
+  Zoom
+  Manual
+}
+
+enum LeaveStatus {
+  Pending
+  Approved
+  Rejected
+}
+
+model User {
+  id        String     @id @default(uuid())
+  name      String
+  email     String     @unique
+  password  String
+  phone     String?
+  country   String?
+  timezone  String?    @default("UTC")
+  avatar    String?
+  role      Role       @default(CUSTOMER)
+  status    UserStatus @default(ACTIVE)
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+
+  // Daily attendance sheets for TRAINERS (formerly Employee Lectures)
+  lectures Lecture[]
+
+  // Relationships
+  // Trainer relations
+  trainerCustomers TrainerAssignment[] @relation("TrainerCustomers")
+  leaves           TrainerLeave[]
+  trainerSessions  Session[]           @relation("TrainerSessions")
+  trainerLogs      ProgressLog[]       @relation("TrainerLogs")
+
+  // Customer relations
+  customerTrainer  TrainerAssignment[]    @relation("CustomerTrainer")
+  subscriptions    CustomerSubscription[]
+  customerSessions Session[]              @relation("CustomerSessions")
+  progressLogs     ProgressLog[]          @relation("CustomerLogs")
+  invoices         Invoice[]
+
+  @@map("users")
+}
+
+model Lecture {
+  id          String        @id @default(uuid())
+  userId      String
+  lectureDate DateTime      // Midnight UTC representation of the tracked date
+  status      LectureStatus
+  notes       String?       @db.VarChar(500)
+  submittedAt DateTime      @default(now())
+  createdAt   DateTime      @default(now())
+  updatedAt   DateTime      @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, lectureDate])
+  @@map("lectures")
+}
+
+model SubscriptionPlan {
+  id              String                 @id @default(uuid())
+  title           String
+  duration        String                 // e.g. "Monthly", "Quarterly", "Half Year", "Yearly"
+  price           Float
+  currency        String                 @default("USD")
+  description     String?
+  sessionsPerWeek Int                    @default(3)
+  active          Boolean                @default(true)
+  createdAt       DateTime               @default(now())
+  updatedAt       DateTime               @updatedAt
+  subscriptions   CustomerSubscription[]
+
+  @@map("subscription_plans")
+}
+
+model CustomerSubscription {
+  id                String             @id @default(uuid())
+  customerId        String
+  planId            String
+  startDate         DateTime           @default(now())
+  expiryDate        DateTime
+  status            SubscriptionStatus @default(ACTIVE)
+  paymentStatus     String             @default("PAID") // PAID, PENDING, FAILED
+  stripePaymentId   String?
+  razorpayPaymentId String?
+  createdAt         DateTime           @default(now())
+  updatedAt         DateTime           @updatedAt
+
+  customer User             @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  plan     SubscriptionPlan @relation(fields: [planId], references: [id], onDelete: Restrict)
+  invoices Invoice[]
+
+  @@map("customer_subscriptions")
+}
+
+model TrainerAssignment {
+  id         String   @id @default(uuid())
+  trainerId  String
+  customerId String
+  assignedAt DateTime @default(now())
+  active     Boolean  @default(true)
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+
+  trainer  User @relation("TrainerCustomers", fields: [trainerId], references: [id], onDelete: Cascade)
+  customer User @relation("CustomerTrainer", fields: [customerId], references: [id], onDelete: Cascade)
+
+  @@unique([customerId, active]) // A customer can only have one active trainer
+  @@map("trainer_assignments")
+}
+
+model Session {
+  id              String          @id @default(uuid())
+  trainerId       String
+  customerId      String
+  title           String
+  date            DateTime
+  startTime       DateTime
+  endTime         DateTime
+  duration        Int
+  meetingProvider MeetingProvider @default(GoogleMeet)
+  meetingLink     String?
+  status          SessionStatus   @default(Scheduled)
+  notes           String?         @db.VarChar(500)
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  trainer     User         @relation("TrainerSessions", fields: [trainerId], references: [id], onDelete: Cascade)
+  customer    User         @relation("CustomerSessions", fields: [customerId], references: [id], onDelete: Cascade)
+  attendance  Attendance?
+  progressLog ProgressLog?
+
+  @@map("sessions")
+}
+
+model Attendance {
+  id              String   @id @default(uuid())
+  sessionId       String   @unique
+  trainerPresent  Boolean  @default(true)
+  customerPresent Boolean  @default(true)
+  completedAt     DateTime @default(now())
+  remarks         String?  @db.VarChar(500)
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @updatedAt
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@map("attendances")
+}
+
+model ProgressLog {
+  id          String   @id @default(uuid())
+  sessionId   String   @unique
+  customerId  String
+  trainerId   String
+  flexibility Int      @default(5)
+  balance     Int      @default(5)
+  breathing   Int      @default(5)
+  focus       Int      @default(5)
+  stress      Int      @default(5)
+  weight      Float?
+  remarks     String?  @db.VarChar(500)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  session  Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+  customer User    @relation("CustomerLogs", fields: [customerId], references: [id], onDelete: Cascade)
+  trainer  User    @relation("TrainerLogs", fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@map("progress_logs")
+}
+
+model TrainerLeave {
+  id        String      @id @default(uuid())
+  trainerId String
+  startDate DateTime
+  endDate   DateTime
+  reason    String?     @db.VarChar(500)
+  status    LeaveStatus @default(Pending)
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+
+  trainer User @relation(fields: [trainerId], references: [id], onDelete: Cascade)
+
+  @@map("trainer_leaves")
+}
+
+model Invoice {
+  id             String   @id @default(uuid())
+  customerId     String
+  subscriptionId String
+  amount         Float
+  currency       String   @default("USD")
+  paymentMethod  String
+  invoiceNumber  String   @unique
+  status         String   // paid, unpaid, void
+  pdfUrl         String?
+  createdAt      DateTime @default(now())
+  updatedAt      DateTime @updatedAt
+
+  customer     User                 @relation(fields: [customerId], references: [id], onDelete: Cascade)
+  subscription CustomerSubscription @relation(fields: [subscriptionId], references: [id], onDelete: Cascade)
+
+  @@map("invoices")
+}
