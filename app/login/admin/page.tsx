@@ -3,7 +3,6 @@
 import React, { useState, useEffect, Suspense } from "react";
 import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/Card";
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { verifyUserRole } from "@/actions/auth";
@@ -62,21 +61,21 @@ function AdminLoginForm() {
 
   return (
     <div className="flex-grow flex items-center justify-center bg-slate-950 py-24 px-6 min-h-screen">
-      <Card className="w-full max-w-md shadow-2xl rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 animate-scaleUp">
+      <div className="w-full max-w-md shadow-2xl rounded-2xl border border-slate-800 bg-slate-900 text-slate-100 p-8 space-y-6 animate-scaleUp">
         
-        <CardHeader className="text-center space-y-2 pt-8">
+        <div className="text-center space-y-2">
           <div className="w-12 h-12 bg-logo-gold/20 rounded-full border border-logo-gold/30 flex items-center justify-center mx-auto shadow-sm">
             <span className="text-sm font-bold text-logo-gold font-serif">PS</span>
           </div>
-          <CardTitle className="font-serif text-2xl font-bold text-logo-gold">
+          <h1 className="font-serif text-2xl font-bold text-logo-gold">
             Pranexa Studio
-          </CardTitle>
-          <CardDescription className="text-xs text-slate-400">
+          </h1>
+          <p className="text-xs text-slate-400">
             Administrative Management Terminal
-          </CardDescription>
-        </CardHeader>
+          </p>
+        </div>
 
-        <CardContent className="p-8 space-y-6">
+        <div className="space-y-6">
           {errorMsg && (
             <div className="bg-red-950/40 text-red-400 border border-red-900/50 p-4 rounded-lg text-xs flex items-center gap-2 font-medium">
               <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" strokeWidth="2.5" stroke="currentColor" className="w-5 h-5 text-red-500 shrink-0">
@@ -122,8 +121,8 @@ function AdminLoginForm() {
             </Button>
           </form>
 
-        </CardContent>
-      </Card>
+        </div>
+      </div>
     </div>
   );
 }
