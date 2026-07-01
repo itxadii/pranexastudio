@@ -7,6 +7,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Input } from "@/components/ui/Input";
 import { Button } from "@/components/ui/Button";
 import { addCustomer } from "@/actions/customer";
+import { verifyUserRole } from "@/actions/auth";
 
 function LoginForm() {
   const router = useRouter();
@@ -41,6 +42,13 @@ function LoginForm() {
     try {
       if (mode === "login") {
         // 1. Log In Flow
+        const checkRoleRes = await verifyUserRole(email, "CUSTOMER");
+        if (!checkRoleRes.success) {
+          setErrorMsg(checkRoleRes.error || "Access Denied.");
+          setLoading(false);
+          return;
+        }
+
         const res = await signIn("credentials", {
           email,
           password,

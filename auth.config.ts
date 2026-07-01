@@ -31,31 +31,36 @@ export const authConfig = {
           if (role === "ADMIN") return true;
           if (role === "TRAINER") return Response.redirect(new URL("/trainer", nextUrl));
           if (role === "CUSTOMER") return Response.redirect(new URL("/customer", nextUrl));
-          return false; // Safely redirect to /login
+          return Response.redirect(new URL("/login/admin", nextUrl)); // Fallback
         }
-        return false; // Redirect to login
+        return Response.redirect(new URL("/login/admin", nextUrl)); // Redirect to Admin Login
       } else if (isOnTrainer) {
         if (isLoggedIn) {
           const role = (auth.user as any).role;
           if (role === "TRAINER") return true;
           if (role === "ADMIN") return Response.redirect(new URL("/admin", nextUrl));
           if (role === "CUSTOMER") return Response.redirect(new URL("/customer", nextUrl));
-          return false; // Safely redirect to /login
+          return Response.redirect(new URL("/login/trainer", nextUrl)); // Fallback
         }
-        return false; // Redirect to login
+        return Response.redirect(new URL("/login/trainer", nextUrl)); // Redirect to Trainer Login
       } else if (isOnCustomer) {
         if (isLoggedIn) {
           const role = (auth.user as any).role;
           if (role === "CUSTOMER") return true;
           if (role === "ADMIN") return Response.redirect(new URL("/admin", nextUrl));
           if (role === "TRAINER") return Response.redirect(new URL("/trainer", nextUrl));
-          return false; // Safely redirect to /login
+          return Response.redirect(new URL("/login", nextUrl)); // Fallback
         }
-        return false; // Redirect to login
+        return Response.redirect(new URL("/login", nextUrl)); // Redirect to Customer Login
       }
       
-      // If logged in and on login or root page, redirect to their home portal
-      if (isLoggedIn && (nextUrl.pathname === "/login" || nextUrl.pathname === "/")) {
+      // If logged in and on any login sub-page or root page, redirect to their home portal
+      if (isLoggedIn && (
+        nextUrl.pathname === "/login" || 
+        nextUrl.pathname === "/login/admin" || 
+        nextUrl.pathname === "/login/trainer" || 
+        nextUrl.pathname === "/"
+      )) {
         const role = (auth.user as any).role;
         if (role === "ADMIN") {
           return Response.redirect(new URL("/admin", nextUrl));
